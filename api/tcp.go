@@ -19,7 +19,8 @@ func StartTcpServer(port string) {
 			fmt.Println(err)
 		}
 		b := serializers.TcpData{}
-		fmt.Println(b.Parse(conn))
+		m := b.Parse(conn)
+		fmt.Println(m.Key, string(m.Data))
 	}
 }
 

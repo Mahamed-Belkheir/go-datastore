@@ -9,7 +9,7 @@ import (
 type TcpData []byte
 
 func (t TcpData) Parse(c net.Conn) *types.TcpMessage {
-	count := 5
+	count := 8
 	for {
 		b := make([]byte, count*count)
 		n, err := c.Read(b)
