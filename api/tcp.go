@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"go-datastore/serializers"
 	"net"
 )
 
@@ -11,12 +12,14 @@ func StartTcpServer(port string) {
 		fmt.Println(err)
 	}
 	defer ln.Close()
+	fmt.Println("server listening at port", port)
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(conn)
+		b := serializers.TcpData{}
+		fmt.Println(b.Parse(conn))
 	}
 }
 

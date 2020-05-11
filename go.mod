@@ -1,3 +1,3 @@
-module go-store
+module go-datastore
 
 go 1.14
