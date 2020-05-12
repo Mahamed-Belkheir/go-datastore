@@ -34,6 +34,16 @@ func main() {
 	}
 	m := Message{Op: 1, MessageType: 1}
 	m.setData("token", []byte("This is a token"))
-	fmt.Println(m.KeySize, m.Key)
 	c.Write(m.Serialize())
+	data := make([]byte, 50)
+	c.Read(data)
+	fmt.Println(data)
+}
+
+var DataTypes = map[uint8]string{
+	1: "text",
+	2: "boolean",
+	3: "integer",
+	4: "blob",
+	5: "map",
 }
