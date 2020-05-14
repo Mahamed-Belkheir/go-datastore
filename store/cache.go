@@ -1,22 +1,22 @@
 package store
 
 import (
-	"go-datastore/types"
+	t "go-datastore/datastructs"
 	"sync"
 )
 
 type Cache struct {
-	storage map[string]*types.TcpMessage
+	storage map[string]*t.Data
 	mutex   sync.RWMutex
 }
 
-func (c *Cache) Get(key string) *types.TcpMessage {
+func (c *Cache) Get(key string) *t.Data {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 	return c.storage[key]
 }
 
-func (c *Cache) Set(key string, value *types.TcpMessage) {
+func (c *Cache) Set(key string, value *t.Data) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.storage[key] = value
@@ -24,6 +24,23 @@ func (c *Cache) Set(key string, value *types.TcpMessage) {
 
 func NewCache() *Cache {
 	return &Cache{
-		storage: make(map[string]*types.TcpMessage, 0),
+		storage: make(map[string]*t.Data, 0),
 	}
+}
+
+func (c *Cache) Operate(op string, data *t.Data) *t.Response {
+	switch op {
+	case "SET":
+		c.Set(data.Key, data)
+		return t.NewResponse("SET", nil)
+	case "GET":
+		value := c.Get(data.Key)
+		if value == nil {
+			return t.NewResponse("FAIL", nil)
+		}
+		return t.NewResponse("GET", value.Serialize(""))
+	default:
+		return t.NewResponse("FAIL", nil)
+	}
+
 }
