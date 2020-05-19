@@ -13,7 +13,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	data := t.Data{Key: "user1_token", DataType: "string", Data: []byte("USERTOKEN12345")}
+	data := t.NewData("string", "user1_token", []byte("USERTOKEN12345")}
 	buffer := data.Serialize("GET")
 	io.Copy(c, buffer)
 

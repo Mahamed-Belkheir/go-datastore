@@ -6,21 +6,35 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"unsafe"
 )
 
+/*
+operation - 1 bytes
+datatype - 1 bytes
+keysize - 1 byte
+key - keysize bytes
+datasize - 4 bytes
+data - datasize bytes
+*/
+
 type Data struct {
-	DataType string
-	Key      string
-	Data     []byte
+	Operation uint8
+	DataType  uint8
+	Key       []byte
+	Data      []byte
 }
 
 func (d *Data) Serialize(operation string) *bytes.Buffer {
 	var data bytes.Buffer
-	data.Write([]byte(operation + "\n"))
-	data.Write([]byte(d.DataType + "\n"))
-	data.Write([]byte(d.Key + "\n"))
+	data.WriteByte(d.Operation)
+	data.WriteByte(d.DataType)
+	keySize := uint8(len(d.Key))
+	data.WriteByte(keySize)
+	dataSize := uint32(len(d.Data))
+	data.Write((*[4]byte)(unsafe.Pointer(&dataSize))[:])
+	data.Write([]byte(d.Key))
 	data.Write(d.Data)
-	data.Write([]byte("\n"))
 	return &data
 }
 
@@ -52,9 +66,9 @@ func ParseTCPMessage(conn io.ReadWriter) (string, *Data, error) {
 	}
 	data = data[:len(data)-1]
 
-	return operation, ParseData(dataType, key, data), nil
+	return operation, NewData(dataType, key, data), nil
 }
 
-func ParseData(DataType, key string, data []byte) *Data {
+func NewData(DataType, key string, data []byte) *Data {
 	return &Data{DataType, key, data}
 }
