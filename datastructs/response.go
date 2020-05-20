@@ -22,7 +22,7 @@ func (r *Response) Serialize() *bytes.Buffer {
 	return &data
 }
 
-func ParseResponse(conn io.ReadWriter) (string, *Data, error) {
+func ParseResponse(conn io.ReadWriter) (string, *Message, error) {
 	rw := bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn))
 	status, err := rw.ReadString('\n')
 
@@ -36,7 +36,7 @@ func ParseResponse(conn io.ReadWriter) (string, *Data, error) {
 		return status, nil, nil
 	}
 
-	_, data, err := ParseTCPMessage(rw)
+	_, data, err := ParseDataIntoMessage(rw)
 
 	if err != nil {
 		fmt.Println(err)

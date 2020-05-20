@@ -13,8 +13,12 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	data := t.NewData("string", "user1_token", []byte("USERTOKEN12345")}
-	buffer := data.Serialize("GET")
+	data, err := t.NewMesage("GET", "string", "user1_token", []byte{}); if err != nil {
+		fmt.Println("error creating new message", err)
+	}
+	
+	buffer := data.Serialize()
+	
 	io.Copy(c, buffer)
 
 	status, newData, err := t.ParseResponse(c)

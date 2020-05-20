@@ -24,7 +24,7 @@ func StartTcpServer(port string, cache *store.Cache) {
 
 func HandleTcp(conn net.Conn, cache *store.Cache) {
 	defer conn.Close()
-	operation, data, err := t.ParseTCPMessage(conn)
+	operation, data, err := t.ParseDataIntoMessage(conn)
 	if err != nil {
 		fmt.Println(err)
 		return
