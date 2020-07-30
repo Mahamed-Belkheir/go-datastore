@@ -11,8 +11,8 @@ func (e *EventsBus) subscribe(eventName, subName string, callback func (Event) R
 
 func (e *EventsBus) publish(subType string, event Event) map[string]Response {
 	responses := map[string]Response{}
-	for subName, func := range e.subscribers[subType] {
-		responses[subName] = func(event)
+	for subName, callback := range e.subscribers[subType] {
+		responses[subName] = callback(event)
 	}
 	return responses
 }
