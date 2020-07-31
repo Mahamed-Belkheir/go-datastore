@@ -15,7 +15,10 @@ func (s *TCPServer) Listen() {
 }
 
 func (s *TCPServer) handleConn(conn net.Conn) {
-	// call log data event
+	s.e.Publish("log", struct{
+		level: "info",
+		message: "new client connected"
+	})
 	// authenticate
 	// await packets
 	// on packet arrival
