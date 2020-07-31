@@ -6,9 +6,11 @@ import (
 
 type TCPNetwork struct{}
 
-func (t *TCPNetwork) Server() *TCPServer {
+func (t *TCPNetwork) Server(username, password string) *TCPServer {
 	return &TCPServer{
 		e: &events.EventsBus{},
+		username: username,
+		password: password,
 	}
 }
 
