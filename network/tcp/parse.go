@@ -5,7 +5,7 @@ import (
 	"github.com/Mahamed-Belkheir/go-datastore/network"
 )
 
-func parseTCPPacket() *network.Packet {
+func parseTCPPacket(conn net.Conn) *network.Packet {
 	var packet network.Packet
 
 	return &packet
