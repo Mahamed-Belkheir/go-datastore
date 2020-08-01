@@ -14,6 +14,7 @@ type Client interface {
 }
 
 type Packet struct {
+	RequestID uint16
 	Operation string
 	DataType  string
 	Key       string
