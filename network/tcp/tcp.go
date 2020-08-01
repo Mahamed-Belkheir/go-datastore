@@ -6,12 +6,15 @@ import (
 
 type TCPNetwork struct{}
 
-func (t *TCPNetwork) Server(username, password string) *TCPServer {
-	return &TCPServer{
+func (t *TCPNetwork) Server(username, password string, maxWorkers, maxQueue int) *TCPServer {
+	server := &TCPServer{
 		e: &events.EventsBus{},
 		username: username,
 		password: password,
 	}
+	pool := NewConnectionPool(maxWorkers, maxQueue, server)
+	server.Pool = pool
+	return server
 }
 
 func (t *TCPNetwork) Client() *TCPClient {

@@ -12,9 +12,11 @@ type TCPServer struct {
 	e *events.EventsBus
 	username string
 	password string
+	Pool *ConnectionPool
 }
 
 func (s *TCPServer) Listen(address string) {
+	s.Pool.Initialize()
 	l, err := net.Listen("tcp", address)
 	if err != nil {
 		s.e.Publish("log", logging.New("error", "tcp server failed to start"))
@@ -25,7 +27,7 @@ func (s *TCPServer) Listen(address string) {
 		if err != nil {
 			s.e.Publish("log", logging.New("error", "failed to connect to client"))
 		}
-		go s.handleConn(conn)
+		s.Pool.AddConn(conn)
 	}
 }
 
