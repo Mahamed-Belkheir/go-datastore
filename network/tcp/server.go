@@ -44,7 +44,7 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 	// loop
 	for {
 		// get request
-		packet := parseTCPPacket(conn)
+		packet := readTCPPacket(conn)
 		// process request
 		response := s.handlePacket(packet)
 		// send response
@@ -52,7 +52,7 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 	}
 }
 
-func (s *TCPServer) handlePacket(packet *network.Packet) []byte {
+func (s *TCPServer) handlePacket(packet network.Packet) []byte {
 	return []byte{}
 }
 

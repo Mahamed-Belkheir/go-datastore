@@ -4,9 +4,7 @@ import (
 	events "github.com/Mahamed-Belkheir/go-datastore/events"
 )
 
-type TCPNetwork struct{}
-
-func (t *TCPNetwork) Server(username, password string, maxWorkers, maxQueue int) *TCPServer {
+func Server(username, password string, maxWorkers, maxQueue int) *TCPServer {
 	server := &TCPServer{
 		e: &events.EventsBus{},
 		username: username,
@@ -17,6 +15,6 @@ func (t *TCPNetwork) Server(username, password string, maxWorkers, maxQueue int)
 	return server
 }
 
-func (t *TCPNetwork) Client() *TCPClient {
+func Client() *TCPClient {
 	return &TCPClient{}
 }
