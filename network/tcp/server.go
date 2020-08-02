@@ -22,6 +22,7 @@ func (s *TCPServer) Listen(address string) {
 		s.e.Publish("log", logging.New("error", "tcp server failed to start"))
 		panic(err)
 	}
+	fmt.Println("Server started listening on ", address)
 	for {
 		conn, err := l.Accept()
 		if err != nil {
@@ -34,7 +35,7 @@ func (s *TCPServer) Listen(address string) {
 func (s *TCPServer) handleConn(conn net.Conn) {
 	// log new connection
 	s.e.Publish("log", logging.New("info", fmt.Sprintf("new client connected. ip: %v", conn.RemoteAddr().String())))
-	
+	fmt.Println("got a new connection")
 	// authenticate
 	if  !parseAuth(conn, s.username, s.password) {
 		s.e.Publish("log", logging.New("info", fmt.Sprintf("client auth failed. ip: %v", conn.RemoteAddr().String())))
@@ -42,5 +43,17 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 	}
 
 	// loop
+	activeConn := EstablishConnection(conn)
 	
+	for {
+		select {
+		case packet := <- activeConn.ReceiveQueue:
+			fmt.Println("Recieved Packet:")
+			fmt.Println(packet)
+		case err := <- activeConn.Errors:
+			fmt.Println("Recieved Error:")
+			fmt.Println(err)
+			return
+		}
+	}
 }

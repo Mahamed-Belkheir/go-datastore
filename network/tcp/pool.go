@@ -26,7 +26,7 @@ func NewConnectionPool(maxWorkers, maxQueue int, server *TCPServer) *ConnectionP
 }
 
 func (c ConnectionPool) Initialize() {
-	for i := 0; i < len(c.WorkerPool); i++ {
+	for i := 0; i < cap(c.WorkerPool); i++ {
 		worker := NewConnectionWorker(c.Server, c.WorkerPool)
 		worker.Start()
 	}
