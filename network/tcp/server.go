@@ -5,7 +5,7 @@ import (
 	"net"
 	logging "github.com/Mahamed-Belkheir/go-datastore/logging"
 	events "github.com/Mahamed-Belkheir/go-datastore/events"
-	network "github.com/Mahamed-Belkheir/go-datastore/network"
+	// network "github.com/Mahamed-Belkheir/go-datastore/network"
 )
 
 type TCPServer struct {
@@ -42,20 +42,5 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 	}
 
 	// loop
-	for {
-		// get request
-		packet := readTCPPacket(conn)
-		// process request
-		response := s.handlePacket(packet)
-		// send response
-		sendData(response, conn)
-	}
-}
-
-func (s *TCPServer) handlePacket(packet network.Packet) []byte {
-	return []byte{}
-}
-
-func sendData(data []byte, conn net.Conn) {
-	conn.Write(data)
+	
 }

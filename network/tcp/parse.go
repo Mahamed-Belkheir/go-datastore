@@ -1,20 +1,28 @@
 package tcp
 
 import (
+	"io"
+	"bytes"
 	"encoding/binary"
 	"bufio"
 	"net"
 	"github.com/Mahamed-Belkheir/go-datastore/network"
 )
 
-func readTCPPacket(conn net.Conn) network.Packet {
-	var packet network.Packet
-
-	return packet
+func readTCPPacket(conn net.Conn) (network.Packet, error) {
+	packet, err := UnmarshalTCPPacket(conn); if err != nil {
+		return packet, err
+	}
+	return packet, nil
 }
 
-func writeTCPPacket(conn net.Conn, packet network.Packet) {
-	conn.Write([]byte{})
+func writeTCPPacket(conn net.Conn, packet network.Packet) error {
+	data := MarshalTCPPacket(packet)
+	_, err := io.Copy(conn, &data)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 
@@ -60,8 +68,33 @@ func UnmarshalTCPPacket(conn net.Conn) (packet network.Packet, err error) {
 	return 
 }
 
-func MarshalTCPPacket(packet network.Packet) []byte {
-	return []byte{}
+func MarshalTCPPacket(packet network.Packet) bytes.Buffer {
+	var data bytes.Buffer
+
+	id := make([]byte, 2)
+	binary.LittleEndian.PutUint16(id, packet.RequestID)
+	data.Write(id)
+
+	op := ReverseOperationsMap[packet.Operation]
+	data.WriteByte(op)
+
+	dataType := ReverseTypesMap[packet.DataType]
+	data.WriteByte(dataType)
+
+	keySize := uint8(len(packet.Key))
+	data.WriteByte(keySize)
+
+	key := []uint8(packet.Key)
+	data.Write(key)
+
+	dataSize := uint32(len(packet.Data))
+	s := make([]byte, 4)
+	binary.LittleEndian.PutUint32(s, dataSize)
+	data.Write(s)
+
+	data.Write(packet.Data)
+
+	return data
 }
 
 

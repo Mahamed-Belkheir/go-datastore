@@ -33,7 +33,11 @@ func (c Connection) transmitData() {
 	for {
 		select {
 		case packet := <- c.SendQueue:
-			writeTCPPacket(c.conn, packet)
+			err := writeTCPPacket(c.conn, packet); if err != nil {
+				c.errors <- err
+				c.stopRecieve <- true
+				return
+			}
 		case <- c.stopTransmit:
 			return
 		}
@@ -42,7 +46,11 @@ func (c Connection) transmitData() {
 
 func (c Connection) receieveData() {
 	for {
-		packet := readTCPPacket(c.conn)
+		packet, err := readTCPPacket(c.conn); if err != nil {
+			c.errors <- err
+			c.stopTransmit <- true
+			return
+		}
 		c.ReceiveQueue <- packet
 		select {
 		case <- c.stopRecieve:
