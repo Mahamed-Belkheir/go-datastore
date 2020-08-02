@@ -49,7 +49,7 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 		select {
 		case packet := <- activeConn.ReceiveQueue:
 			fmt.Println("Recieved Packet:")
-			fmt.Println(packet)
+			activeConn.SendQueue <- packet
 		case err := <- activeConn.Errors:
 			fmt.Println("Recieved Error:")
 			fmt.Println(err)

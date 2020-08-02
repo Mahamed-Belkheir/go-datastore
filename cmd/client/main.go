@@ -30,7 +30,10 @@ func main() {
 		Data: []uint8("Hello World"),
 	}
 	activeConn.Send(p)
+	data := <- activeConn.ReceiveQueue
+	fmt.Println(data)
 	activeConn.Send(p2)
-	for {}
+	data = <- activeConn.ReceiveQueue
+	fmt.Println(data)
 
 }
