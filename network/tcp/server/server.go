@@ -1,11 +1,11 @@
-package tcp
+package server
 
 import (
 	"fmt"
 	"net"
 	logging "github.com/Mahamed-Belkheir/go-datastore/logging"
 	events "github.com/Mahamed-Belkheir/go-datastore/events"
-	// network "github.com/Mahamed-Belkheir/go-datastore/network"
+	t "github.com/Mahamed-Belkheir/go-datastore/network/tcp/utils"
 )
 
 type TCPServer struct {
@@ -13,6 +13,17 @@ type TCPServer struct {
 	username string
 	password string
 	Pool *ConnectionPool
+}
+
+func Server(username, password string, maxWorkers, maxQueue int) *TCPServer {
+	server := &TCPServer{
+		e: &events.EventsBus{},
+		username: username,
+		password: password,
+	}
+	pool := NewConnectionPool(maxWorkers, maxQueue, server)
+	server.Pool = pool
+	return server
 }
 
 func (s *TCPServer) Listen(address string) {
@@ -37,13 +48,13 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 	s.e.Publish("log", logging.New("info", fmt.Sprintf("new client connected. ip: %v", conn.RemoteAddr().String())))
 	fmt.Println("got a new connection")
 	// authenticate
-	if  !parseAuth(conn, s.username, s.password) {
+	if  !t.ParseAuth(conn, s.username, s.password) {
 		s.e.Publish("log", logging.New("info", fmt.Sprintf("client auth failed. ip: %v", conn.RemoteAddr().String())))
 		return
 	}
 
 	// loop
-	activeConn := EstablishConnection(conn)
+	activeConn := t.EstablishConnection(conn)
 	
 	for {
 		select {

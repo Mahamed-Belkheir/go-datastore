@@ -11,6 +11,9 @@ type Server interface {
 
 type Client interface {
 	Connect()
+	Get()
+	Set()
+	Delete()
 }
 
 type Packet struct {

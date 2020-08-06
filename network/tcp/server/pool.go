@@ -1,7 +1,6 @@
-package tcp
+package server
 
 import (
-	// "github.com/Mahamed-Belkheir/go-datastore/logging"
 	"net"
 )
 

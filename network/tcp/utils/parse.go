@@ -1,4 +1,4 @@
-package tcp
+package utils
 
 import (
 	"io"
@@ -101,7 +101,7 @@ func MarshalTCPPacket(packet network.Packet) bytes.Buffer {
 
 
 
-func parseAuth(conn net.Conn, username, password string) bool {
+func ParseAuth(conn net.Conn, username, password string) bool {
 	return true
 }
 

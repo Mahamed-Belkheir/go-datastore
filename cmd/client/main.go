@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/Mahamed-Belkheir/go-datastore/network"
 	"fmt"
-	t "github.com/Mahamed-Belkheir/go-datastore/network/tcp"
+	t "github.com/Mahamed-Belkheir/go-datastore/network/tcp/utils"
 	"net"
 	
 )

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/Mahamed-Belkheir/go-datastore/network/tcp"
+	"github.com/Mahamed-Belkheir/go-datastore/network/tcp/server"
 )
 
 func main() {
-	server := tcp.Server("bob", "password", 5, 10)
+	server := server.Server("bob", "password", 5, 10)
 	server.Listen("0.0.0.0:5000")
 }
