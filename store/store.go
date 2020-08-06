@@ -1,3 +1,0 @@
-package store
-
-func Store() {}

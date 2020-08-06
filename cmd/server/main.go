@@ -1,12 +1,10 @@
 package main
 
 import (
-	"go-datastore/store"
-	"go-datastore/tcp"
+	"github.com/Mahamed-Belkheir/go-datastore/network/tcp"
 )
 
 func main() {
-	cache := store.NewCache()
-	tcp.StartTcpServer(":5000", cache)
-
+	server := tcp.Server("bob", "password", 5, 10)
+	server.Listen("0.0.0.0:5000")
 }
