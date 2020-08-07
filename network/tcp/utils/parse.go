@@ -167,7 +167,6 @@ func Serialize(data interface{}) ([]byte, string, error) {
 		binary.LittleEndian.PutUint64(result, uint64(uintrep))
 		return result, "float", nil
 	default:
-	// case []interface{}:
 		result, err:= json.Marshal(data); if err != nil {
 			return nil, "err", err
 		}
@@ -187,7 +186,7 @@ func Deserialize(data []byte, dataType string) (interface{}, error) {
 		return DeserializeFloat(data), nil
 	default:
 		var result interface{} 
-		err := DeserializeJson(data, result)
+		err := DeserializeJson(data, &result)
 		return result, err
 	}
 }
@@ -212,7 +211,7 @@ func DeserializeFloat(data []byte) float64 {
 	return math.Float64frombits(binary.LittleEndian.Uint64(data))
 }
 
-func DeserializeJson(data []byte, target interface{}) error {
+func DeserializeJson(data []byte, target *interface{}) error {
 	err := json.Unmarshal(data, target); if err != nil {
 		return err
 	}
