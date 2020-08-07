@@ -174,3 +174,47 @@ func Serialize(data interface{}) ([]byte, string, error) {
 		return result, "json", nil
 	}
 }
+
+func Deserialize(data []byte, dataType string) (interface{}, error) {
+	switch dataType {
+	case "string":
+		return DeserializeString(data), nil
+	case "integer":
+		return DeserializeInt(data), nil
+	case "boolean":
+		return DeserializeBoolean(data), nil
+	case "float":
+		return DeserializeFloat(data), nil
+	default:
+		var result interface{} 
+		err := DeserializeJson(data, result)
+		return result, err
+	}
+}
+
+func DeserializeString(data []byte) string {
+	return string(data)
+}
+
+func DeserializeInt(data []byte) int64 {
+	return int64(binary.LittleEndian.Uint64(data))
+}
+
+func DeserializeBoolean(data []byte) bool {
+	if data[0] == 1 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func DeserializeFloat(data []byte) float64 {
+	return math.Float64frombits(binary.LittleEndian.Uint64(data))
+}
+
+func DeserializeJson(data []byte, target interface{}) error {
+	err := json.Unmarshal(data, target); if err != nil {
+		return err
+	}
+	return nil
+}
