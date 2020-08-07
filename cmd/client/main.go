@@ -1,39 +1,22 @@
 package main
 
 import (
-	"github.com/Mahamed-Belkheir/go-datastore/network"
+	c "github.com/Mahamed-Belkheir/go-datastore/network/tcp/client"
 	"fmt"
-	t "github.com/Mahamed-Belkheir/go-datastore/network/tcp/utils"
-	"net"
+	
 	
 )
 
 func main() {
-	conn, err := net.Dial("tcp", "127.0.0.1:5000"); if err != nil {
-		fmt.Println("Could not connect")
-		fmt.Println(err)
+	client := c.Client("0.0.0.0:5000", "a", "a")
+	conn, err := client.Connect(); if err != nil {
+		fmt.Println("error connecting: ", err)
 		return
 	}
-	activeConn := t.EstablishConnection(conn)
-	p := network.Packet{
-		RequestID: 1,
-		DataType: "string",
-		Key: "hello",
-		Operation: "SET",
-		Data: []uint8("Hello World"),
+	err = conn.Set("key", "message"); if err != nil {
+		fmt.Println("failed to Set, err:", err)
+		return
 	}
-	p2 := network.Packet{
-		RequestID: 2,
-		DataType: "string",
-		Key: "bye",
-		Operation: "SET",
-		Data: []uint8("Hello World"),
-	}
-	activeConn.Send(p)
-	data := <- activeConn.ReceiveQueue
-	fmt.Println(data)
-	activeConn.Send(p2)
-	data = <- activeConn.ReceiveQueue
-	fmt.Println(data)
+	fmt.Println("done")
 
 }

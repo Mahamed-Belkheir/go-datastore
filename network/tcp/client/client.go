@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"errors"
 	"github.com/Mahamed-Belkheir/go-datastore/network/tcp/utils"
 	"github.com/Mahamed-Belkheir/go-datastore/network"
@@ -45,11 +46,12 @@ func (c TCPClientInstance) Set(key string, value interface{}) (err error) {
 	packet, err := composePacket(key, value); if err != nil {
 		return err
 	}
-	var resultChan chan network.Packet
-	c.Conn.SendPacket(*packet, resultChan)
+	var resultChan = make(chan network.Packet)
+	c.Conn.SendPacket(*packet, &resultChan)
+	fmt.Println("reading")
 	result := <- resultChan
 	if result.Operation != "OK" {
-		return errors.New(string(result.Data))
+		return errors.New( "Error, got operation: " + result.Operation )
 	}
 	return nil
 }

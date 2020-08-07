@@ -60,6 +60,7 @@ func (s *TCPServer) handleConn(conn net.Conn) {
 		select {
 		case packet := <- activeConn.ReceiveQueue:
 			fmt.Println("Recieved Packet:")
+			packet.Operation = "OK"
 			activeConn.SendQueue <- packet
 		case err := <- activeConn.Errors:
 			fmt.Println("Recieved Error:")

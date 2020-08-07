@@ -34,7 +34,6 @@ func EstablishConnection(conn net.Conn) Connection {
 func (c Connection) transmitData() {
 	go func() {
 		for {
-			fmt.Println("looping transmit")
 			select {
 			case packet := <- c.SendQueue:
 				err := writeTCPPacket(c.conn, packet); if err != nil {
@@ -42,8 +41,6 @@ func (c Connection) transmitData() {
 					c.stopRecieve <- true
 					return
 				}
-				fmt.Println("sent data")
-	
 			case <- c.stopTransmit:
 				return
 			}
@@ -53,20 +50,15 @@ func (c Connection) transmitData() {
 
 func (c Connection) receieveData() {
 	go func(){
-		defer fmt.Println("EXITED")
 		for {
-			fmt.Println("Recieving data")
 			packet, err := readTCPPacket(c.conn); if err != nil {
 				c.Errors <- err
 				c.stopTransmit <- true
-				fmt.Println("error reading, exiting")
 				return
 			}
-			fmt.Println("data put in queue")
 			c.ReceiveQueue <- packet
 			select {
 			case <- c.stopRecieve:
-				fmt.Println("stopping recieve")
 				return
 			default:
 			}
